@@ -44,6 +44,19 @@ use Kubectl::CLIWrapper;
 }
 
 {
+  my $control = Kubectl::CLIWrapper->new(
+    namespace    => 'ns1',
+    server       => 'https://server1.example.com',
+    token        => sub { 't2' }
+  );
+  my $command = join ' ', $control->command_for('create', 'pod');
+  note $command;
+  like($command, qr/--namespace=ns1/);
+  like($command, qr|--server=https://server1.example.com|);
+  like($command, qr/--token=t2/);
+}
+
+{
   my $ok = Kubectl::CLIWrapper->new(
     kubectl => 't/fake_kubectl/ok',
     namespace => 'x',
